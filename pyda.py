@@ -1,21 +1,12 @@
 import wolframalpha
-#client = wolframalpha.Client("ATVE7L-94QT4PX37R")
-
-client=wolframalpha.Client("lilpumpsaysnopeeking")
-
-
 import wikipedia
 
 #library za sintezu govora
 import pyttsx3
-engine = pyttsx3.init()
-
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
 
 # Import customtkinter module
 import customtkinter as ctk
-import tkinter as tk
+
  
 # Sets the appearance mode of the application
 # "System" sets the appearance same as that of the system
@@ -89,6 +80,15 @@ class My_Py_Asisstant_App(ctk.CTk):
 
 
     def ispis_odgovora_na_korisnikov_input(self):
+        client = wolframalpha.Client("ATVE7L-94QT4PX37R")
+        #client=wolframalpha.Client("lilpumpsaysnopeeking")
+
+        # voice engine for digital asisstent
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
+
+        # user input
         upit = self.korisnikovo_pitanje.get()
 
         try:
@@ -130,37 +130,37 @@ if __name__ == "__main__":
     app.mainloop()
 
 
-def ispis_odgovora_na_korisnikov_input():
-        # #return(self.korisnikovo_pitanje.get())
-        # return "hej"
-        #print(upit)
-        #return upit
-        upit = "3+3"
-        try:
-            #wiki_res = wikipedia.summary(upit, sentences=2)
-            wolfram_res = next(client.query(input="where is zagreb").results).text
-            #return wolfram_res
-            print (wolfram_res)
-            #engine.say(wolfram_res)
-            #sg.PopupNonBlocking("Wolfram Result: "+wolfram_res,"Wikipedia Result: "+wiki_res)
-        except wikipedia.exceptions.DisambiguationError:
-            wolfram_res = next(client.query(upit).results).text
-            #return wolfram_res
-            print (wolfram_res)
-            #engine.say(wolfram_res)
-            #sg.PopupNonBlocking(wolfram_res)
-        except wikipedia.exceptions.PageError:
-            wolfram_res = next(client.query(upit).results).text
-            #return wolfram_res
-            print (wolfram_res)
-            #engine.say(wolfram_res)
-            #sg.PopupNonBlocking(wolfram_res)
-        except:
-            print("An exception has occurred!")
+# def ispis_odgovora_na_korisnikov_input():
+#         # #return(self.korisnikovo_pitanje.get())
+#         # return "hej"
+#         #print(upit)
+#         #return upit
+#         upit = "3+3"
+#         try:
+#             #wiki_res = wikipedia.summary(upit, sentences=2)
+#             wolfram_res = next(client.query(input="where is zagreb").results).text
+#             #return wolfram_res
+#             print (wolfram_res)
+#             #engine.say(wolfram_res)
+#             #sg.PopupNonBlocking("Wolfram Result: "+wolfram_res,"Wikipedia Result: "+wiki_res)
+#         except wikipedia.exceptions.DisambiguationError:
+#             wolfram_res = next(client.query(upit).results).text
+#             #return wolfram_res
+#             print (wolfram_res)
+#             #engine.say(wolfram_res)
+#             #sg.PopupNonBlocking(wolfram_res)
+#         except wikipedia.exceptions.PageError:
+#             wolfram_res = next(client.query(upit).results).text
+#             #return wolfram_res
+#             print (wolfram_res)
+#             #engine.say(wolfram_res)
+#             #sg.PopupNonBlocking(wolfram_res)
+#         except:
+#             print("An exception has occurred!")
         
 
-# client = wolframalpha.Client("3KJ4AR-A9JEVLY5Y9")
-# res = client.query('temperature in Washington, DC on October 3, 2012')
-# print(res)
+# # client = wolframalpha.Client("3KJ4AR-A9JEVLY5Y9")
+# # res = client.query('temperature in Washington, DC on October 3, 2012')
+# # print(res)
 
-#ispis_odgovora_na_korisnikov_input()
+# #ispis_odgovora_na_korisnikov_input()
