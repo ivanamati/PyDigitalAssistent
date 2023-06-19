@@ -43,12 +43,21 @@ class My_Py_Asisstant_App:
                                          text="OK", 
                                          command=self.popup_prozor,
                                          width=10)
-        self.gumb_za_rezutat.grid(row=1, column=1,                                   
+        self.gumb_za_rezutat.grid(row=2, column=1,                                   
                                         padx=10, pady=10,
                                         sticky="ew")
         self.gumb_cancel = ctk.CTkButton(self.window, text="Cancel", command=self.izlaz_iz_app,width=10)
-        self.gumb_cancel.grid(row=1, column=2, sticky="ew", pady=20)
+        self.gumb_cancel.grid(row=2, column=2, sticky="ew", pady=20)
 
+
+
+        combobox_var = ctk.StringVar(value="choose the language")  # set initial value
+        self.odabir_jezika_asistenta = ctk.CTkComboBox(master=self.window,
+                                     values=["en", "de", "fr"],
+                                     #command=lambda: self.combobox_callback,
+                                     variable=combobox_var)
+        self.odabir_jezika_asistenta.grid(row=1,column=1,padx=10,
+                                        sticky="ew")
 
 
     def popup_prozor(self):
@@ -57,12 +66,30 @@ class My_Py_Asisstant_App:
         popup_window.title("Message")
         popup_window.geometry("600x250")
 
+        odgovor = self.ispis_odgovora_na_korisnikov_input()
+        odabrani_jezik = self.odabir_jezika_asistenta.get()
+        print(odabrani_jezik)
+
         # voice engine for digital asisstent
         engine = pyttsx3.init()
-        voices = engine.getProperty('voices')
-        engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
 
-        odgovor = self.ispis_odgovora_na_korisnikov_input()
+        if odabrani_jezik == "en":
+            voices = engine.getProperty('voices')
+            engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
+
+        elif odabrani_jezik == "de":
+            german_voice_id = "com.apple.speech.synthesis.voice.anna"
+            engine.setProperty('voice', german_voice_id)
+
+        elif odabrani_jezik == "fr":
+            voices = engine.getProperty('voices')
+            french_voice_id = "com.apple.speech.synthesis.voice.amelie"
+            engine.setProperty('voice', french_voice_id)
+
+        # voices = engine.getProperty('voices')
+        # engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
+
+        # odgovor = self.ispis_odgovora_na_korisnikov_input()
 
         popup_label = ctk.CTkLabel(popup_window, text="the answer is:")
         popup_label.pack(pady=10)
@@ -81,24 +108,28 @@ class My_Py_Asisstant_App:
     def ispis_odgovora_na_korisnikov_input(self):
         client = wolframalpha.Client("ATVE7L-94QT4PX37R")
 
+        # user input
+        upit = self.korisnikovo_pitanje.get()
+        odabrani_jezik = self.odabir_jezika_asistenta.get()
+
         # voice engine for digital asisstent
         engine = pyttsx3.init()
         voices = engine.getProperty('voices')
-        engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
-
-        # user input
-        upit = self.korisnikovo_pitanje.get()
+        engine.setProperty('voice', voices[1].id)
 
         try:
+            jezik = wikipedia.set_lang(odabrani_jezik)
             wiki_rezultat = wikipedia.summary(upit, sentences=2)
             return wiki_rezultat
 
         except wikipedia.exceptions.DisambiguationError:
+            
             wolfram_res = next(client.query(upit).results).text
             print("odgovor je bio ovdje")
             return wolfram_res
 
         except wikipedia.exceptions.PageError:
+            
             wolfram_res = next(client.query(upit).results).text
             print("ovdje sam sada")
             return wolfram_res
@@ -109,9 +140,9 @@ class My_Py_Asisstant_App:
             return "An exception has occurred!"
                   
 
-    def dohvacanje_unosa(self):
-        vas_unos = self.korisnikovo_pitanje.get()
-        print("Upisali ste:", vas_unos)
+    # def dohvacanje_unosa(self):
+    #     vas_unos = self.korisnikovo_pitanje.get()
+    #     print("Upisali ste:", vas_unos)
 
     def izlaz_iz_app(self):
         self.window.destroy()
