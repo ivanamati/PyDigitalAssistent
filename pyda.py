@@ -14,51 +14,41 @@ ctk.set_appearance_mode("System")
  
 # Sets the color of the widgets
 # Supported themes: green, dark-blue, blue
-ctk.set_default_color_theme("green")   
+ctk.set_default_color_theme("blue")   
  
 # Create App class
-class My_Py_Asisstant_App(ctk.CTk):
-# Layout of the GUI will be written in the init itself
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.title("My Py Digital Asisstant ")   
-        self.geometry("500x150")   
+class My_Py_Asisstant_App:
+
+    def __init__(self):
+        self.window = ctk.CTk()
+        self.window.title("My Py Digital Asisstant ")   
+        self.window.geometry("500x150")   
  
         # Name Label
-        self.greetinglabenl = ctk.CTkLabel(self,
+        self.greetinglabenl = ctk.CTkLabel(self.window,
                                       text="How can IPy help you?")
         self.greetinglabenl.grid(row=0, column=0,
                             padx=20, pady=20,
                             sticky="ew")
  
         # Name Entry Field
-        self.korisnikovo_pitanje = ctk.CTkEntry(self,
+        self.korisnikovo_pitanje = ctk.CTkEntry(self.window,
                          placeholder_text="your input here", width=300)
         self.korisnikovo_pitanje.grid(row=0, column=1,
                             columnspan=3, padx=10,
                             pady=20, sticky="ew")
-        
-        # korisnikov_upit = self.korisnikovo_pitanje.get()
-
+    
         # OK Button
-        self.gumb_za_rezutat = ctk.CTkButton(self,
+        self.gumb_za_rezutat = ctk.CTkButton(self.window,
                                          text="OK", 
-                                         #command=lambda: self.popup_prozor(upit=self.korisnikovo_pitanje.get()),
                                          command=self.popup_prozor,
-                                         #self.dohvacanje_unosa, 
                                          width=10)
         self.gumb_za_rezutat.grid(row=1, column=1,                                   
                                         padx=10, pady=10,
                                         sticky="ew")
-        self.gumb_cancel = ctk.CTkButton(self, text="Cancel", command=self.izlaz_iz_app,width=10)
+        self.gumb_cancel = ctk.CTkButton(self.window, text="Cancel", command=self.izlaz_iz_app,width=10)
         self.gumb_cancel.grid(row=1, column=2, sticky="ew", pady=20)
 
-        # try:
-        # #     wiki_res = wikipedia.summary(self.korisnikovo_pitanje.get(), sentences=2)
-        #     wolfram_res = next(client.query(self.korisnikovo_pitanje.get()).results).text
-        #     return wolfram_res
-        # except:
-        #     return Exception
 
 
     def popup_prozor(self):
@@ -67,12 +57,21 @@ class My_Py_Asisstant_App(ctk.CTk):
         popup_window.title("Message")
         popup_window.geometry("600x250")
 
+        # voice engine for digital asisstent
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[1].id) # ili "voices[0].id" ovisno o željenom glasu
+
         odgovor = self.ispis_odgovora_na_korisnikov_input()
 
         popup_label = ctk.CTkLabel(popup_window, text="the answer is:")
         popup_label.pack(pady=10)
         popup_answer = ctk.CTkLabel(popup_window, text=odgovor, wraplength=500)
         popup_answer.pack(pady=20)
+
+        # this code helps that sound comes 1 second after the tekst
+        self.window.after(1000, lambda: engine.say(odgovor))
+        self.window.after(1000, engine.runAndWait)
 
         popup_button = ctk.CTkButton(popup_window, text="GO BACK",
                                      command=popup_window.destroy)
@@ -81,7 +80,6 @@ class My_Py_Asisstant_App(ctk.CTk):
 
     def ispis_odgovora_na_korisnikov_input(self):
         client = wolframalpha.Client("ATVE7L-94QT4PX37R")
-        #client=wolframalpha.Client("lilpumpsaysnopeeking")
 
         # voice engine for digital asisstent
         engine = pyttsx3.init()
@@ -93,25 +91,20 @@ class My_Py_Asisstant_App(ctk.CTk):
 
         try:
             wiki_rezultat = wikipedia.summary(upit, sentences=2)
-            # engine.say(wiki_rezultat)
-            # engine.runAndWait()
             return wiki_rezultat
-            #sg.PopupNonBlocking("Wolfram Result: "+wolfram_res,"Wikipedia Result: "+wiki_res)
 
         except wikipedia.exceptions.DisambiguationError:
             wolfram_res = next(client.query(upit).results).text
-            engine.say(wolfram_res)
-            engine.runAndWait()
+            print("odgovor je bio ovdje")
             return wolfram_res
 
         except wikipedia.exceptions.PageError:
             wolfram_res = next(client.query(upit).results).text
-            engine.say(wolfram_res)
-            engine.runAndWait()
+            print("ovdje sam sada")
             return wolfram_res
-
+        
         except:
-            engine.say("Im sorry, I can't find the answer to your question")
+            engine.say("I'm sorry, I can't find the answer to your question")
             engine.runAndWait()
             return "An exception has occurred!"
                   
@@ -121,13 +114,13 @@ class My_Py_Asisstant_App(ctk.CTk):
         print("Upisali ste:", vas_unos)
 
     def izlaz_iz_app(self):
-        self.destroy()
+        self.window.destroy()
         
         
 if __name__ == "__main__":
     app = My_Py_Asisstant_App()
     # Runs the app
-    app.mainloop()
+    app.window.mainloop()
 
 
 # def ispis_odgovora_na_korisnikov_input():
