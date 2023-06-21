@@ -41,7 +41,7 @@ class My_Py_Asisstant_App:
         # OK Button
         self.gumb_za_rezutat = ctk.CTkButton(self.window,
                                          text="OK", 
-                                         command=self.popup_prozor,
+                                         command=self.popup_prozor_za_odgovor,
                                          width=10)
         
         # CANCEL button
@@ -60,29 +60,22 @@ class My_Py_Asisstant_App:
                                         sticky="ew")
 
 
-    def popup_prozor(self):
+    def popup_prozor_za_odgovor(self):
         popup_window = ctk.CTkToplevel()
         popup_window.grab_set() 
         popup_window.title("Message")
-        popup_window.geometry("600x450")     
+        popup_window.geometry("600x400")     
         
-        # voice engine for digital asisstent
-
         # ODGOVOR:
         odgovor = self.odgovor_na_korisnikov_input()
-
         popup_label = ctk.CTkLabel(popup_window, text="the answer is:")
         popup_label.pack(pady=10)
-
         # ovdje se ispsuje odgovor:
-        popup_answer = ctk.CTkLabel(popup_window, text=odgovor, wraplength=600)
+        popup_answer = ctk.CTkLabel(popup_window, text=odgovor, wraplength=550)
         popup_answer.pack(pady=20)
 
-        # # this code helps that sound comes 1 second after the tekst
-        # self.window.after(1000, lambda: engine.say(odgovor))
-        # self.window.after(1000, engine.runAndWait)
 
-                # promjena jezika s obzirom na odabir korisnika
+        # promjena jezika s obzirom na odabir korisnika
         engine = pyttsx3.init()
         odabrani_jezik = self.odabir_jezika_asistenta.get()
         print("vas odabrani jezik je: ", odabrani_jezik)
@@ -104,13 +97,14 @@ class My_Py_Asisstant_App:
         elif odabrani_jezik == "hr":
             engine.stop()
 
-        # GO BACK
+        # GO BACK button
         popup_button = ctk.CTkButton(popup_window, text="GO BACK",
                                      command=popup_window.destroy)
         popup_button.place(anchor="center",relx=0.5, rely=0.8)
 
 
     def odgovor_na_korisnikov_input(self):
+
         client = wolframalpha.Client("ATVE7L-94QT4PX37R")
 
         # user input
@@ -141,6 +135,12 @@ class My_Py_Asisstant_App:
             engine.say("I'm sorry, I can't find the answer to your question")
             engine.runAndWait()
             return "An exception has occurred!"
+        
+
+    def timeout_handler(signum):
+    # Ova funkcija će se pozvati nakon isteka određenog vremena tijekom izvršavanja
+    # upita i prekinuti izvršavanje programa
+        return Exception("Vrijeme za izvršavanje upita je isteklo.")
                   
 
     # def dohvacanje_unosa(self):
